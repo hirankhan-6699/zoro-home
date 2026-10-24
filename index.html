@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050a07">
+<title>Wano Home</title>
+<style>
+  :root{
+    --bg:#050a07; --bg2:#0a1a10; --green:#2ecc71; --green2:#00ff88;
+    --dim:#7fae92; --card:rgba(10,30,18,.65); --line:rgba(46,204,113,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    color:#e6fff0;
+    background:
+      radial-gradient(900px 500px at 50% -10%, rgba(46,204,113,.18), transparent 60%),
+      radial-gradient(600px 400px at 100% 100%, rgba(0,255,136,.08), transparent 60%),
+      linear-gradient(180deg,var(--bg2),var(--bg));
+    display:flex;align-items:center;justify-content:center;
+    padding:max(20px,env(safe-area-inset-top)) 16px max(20px,env(safe-area-inset-bottom));
+    overflow-x:hidden;
+  }
+  /* three-sword slash lines */
+  .slashes{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+  .slashes i{
+    position:absolute;width:140%;height:2px;left:-20%;
+    background:linear-gradient(90deg,transparent,var(--green),transparent);
+    opacity:.18;transform:rotate(-24deg);
+  }
+  .slashes i:nth-child(1){top:22%}
+  .slashes i:nth-child(2){top:26%;opacity:.28}
+  .slashes i:nth-child(3){top:30%}
+  main{position:relative;z-index:1;width:100%;max-width:640px;text-align:center}
+  .clock{
+    font-size:clamp(56px,17vw,120px);font-weight:800;letter-spacing:2px;
+    font-variant-numeric:tabular-nums;line-height:1;
+    color:var(--green2);text-shadow:0 0 24px rgba(0,255,136,.45),0 0 2px #fff3;
+  }
+  .clock small{font-size:.32em;margin-left:.15em;color:var(--green);letter-spacing:0}
+  .date{margin-top:12px;font-size:clamp(14px,4vw,18px);color:var(--dim);letter-spacing:1px}
+  .quote{margin-top:6px;font-size:12px;color:var(--green);opacity:.8;letter-spacing:3px;text-transform:uppercase}
+
+  /* background photo layer: put your own image next to this file as zoro.jpg */
+  .bg{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      linear-gradient(180deg,rgba(5,10,7,.55) 0%,rgba(5,10,7,.78) 55%,rgba(5,10,7,.95) 100%),
+      radial-gradient(700px 500px at 50% 30%,rgba(46,204,113,.22),transparent 70%),
+      url('zoro.jpg') center top/cover no-repeat;
+    filter:saturate(1.1) contrast(1.05);
+  }
+  /* signature line */
+  .sign{
+    margin-top:22px;display:flex;align-items:center;justify-content:center;gap:14px;
+  }
+  .sign::before,.sign::after{
+    content:"";flex:1;max-width:70px;height:2px;
+    background:linear-gradient(90deg,transparent,var(--green2));
+    transform:skewX(-35deg);box-shadow:0 0 10px var(--green2);
+  }
+  .sign::after{background:linear-gradient(90deg,var(--green2),transparent)}
+  .sign b{
+    font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:700;
+    font-size:clamp(22px,7vw,34px);letter-spacing:3px;white-space:nowrap;
+    background:linear-gradient(180deg,#eafff3 0%,var(--green2) 55%,#0e8f4a 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 10px rgba(0,255,136,.55));
+  }
+
+  .search{
+    margin-top:34px;display:flex;align-items:center;gap:8px;
+    background:var(--card);border:1px solid var(--line);border-radius:999px;
+    padding:6px 6px 6px 18px;backdrop-filter:blur(8px);
+    box-shadow:0 0 30px rgba(46,204,113,.12);
+  }
+  .search:focus-within{border-color:var(--green2);box-shadow:0 0 30px rgba(0,255,136,.28)}
+  .search input{
+    flex:1;min-width:0;background:none;border:0;outline:0;color:#eafff3;
+    font-size:16px;padding:12px 0;
+  }
+  .search input::placeholder{color:#5f8d73}
+  .search button{
+    border:0;cursor:pointer;border-radius:999px;padding:12px 20px;font-weight:700;
+    background:linear-gradient(135deg,var(--green),#0e8f4a);color:#02150a;font-size:15px;
+  }
+  .tabs{margin-top:14px;display:flex;gap:10px;justify-content:center}
+  .tab{
+    border:1px solid var(--line);background:transparent;color:var(--dim);
+    padding:8px 18px;border-radius:999px;font-size:14px;cursor:pointer;
+  }
+  .tab.active{color:#02150a;background:var(--green);border-color:var(--green);font-weight:700}
+
+  .links{margin-top:30px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .links a{
+    display:block;text-decoration:none;color:#e6fff0;padding:16px;border-radius:14px;
+    background:var(--card);border:1px solid var(--line);font-weight:600;
+    transition:transform .15s,border-color .15s,box-shadow .15s;
+  }
+  .links a:hover,.links a:active{transform:translateY(-2px);border-color:var(--green2);box-shadow:0 0 18px rgba(0,255,136,.25)}
+  .links a span{display:block;font-size:12px;color:var(--dim);font-weight:400;margin-top:3px}
+  footer{margin-top:28px;font-size:11px;color:#4d7a60;letter-spacing:2px}
+  @media (min-width:520px){.links{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="slashes"><i></i><i></i><i></i></div>
+<main>
+  <div class="clock" id="clock">--:--<small>--</small></div>
+  <div class="date" id="date">&nbsp;</div>
+  <div class="sign"><b>Nothing happened.</b></div>
+  <div class="quote" id="greet">&nbsp;</div>
+
+  <form class="search" id="form" autocomplete="off">
+    <input id="q" type="search" placeholder="Search Google..." aria-label="Search" autofocus>
+    <button type="submit">Go</button>
+  </form>
+  <div class="tabs">
+    <button class="tab active" data-mode="google" type="button">Google</button>
+    <button class="tab" data-mode="youtube" type="button">YouTube</button>
+  </div>
+
+  <div class="links">
+    <a href="https://www.youtube.com" target="_blank" rel="noopener">YouTube<span>youtube.com</span></a>
+    <a href="https://www.google.com" target="_blank" rel="noopener">Google<span>google.com</span></a>
+  </div>
+  <footer>三刀流 · SANTORYU</footer>
+</main>
+
+<script>
+(function(){
+  var clock=document.getElementById('clock'),dateEl=document.getElementById('date'),greet=document.getElementById('greet');
+  var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function p(n){return n<10?'0'+n:n}
+  function tick(){
+    var d=new Date(),h=d.getHours(),ap=h>=12?'PM':'AM',h12=h%12||12;
+    clock.innerHTML=p(h12)+':'+p(d.getMinutes())+'<small>'+ap+'</small>';
+    dateEl.textContent=days[d.getDay()]+', '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+    greet.textContent=h<5?'Night watch':h<12?'Morning training':h<17?'Afternoon battle':h<21?'Evening voyage':'Night rest';
+  }
+  tick();setInterval(tick,1000);
+
+  var mode='google',q=document.getElementById('q');
+  var tabs=document.querySelectorAll('.tab');
+  tabs.forEach(function(t){
+    t.addEventListener('click',function(){
+      mode=t.dataset.mode;
+      tabs.forEach(function(x){x.classList.toggle('active',x===t)});
+      q.placeholder=mode==='google'?'Search Google...':'Search YouTube...';
+      q.focus();
+    });
+  });
+  document.getElementById('form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var v=q.value.trim();if(!v)return;
+    var base=mode==='google'?'https://www.google.com/search?q=':'https://www.youtube.com/results?search_query=';
+    window.location.href=base+encodeURIComponent(v);
+  });
+})();
+</script>
+</body>
+</html>
